@@ -5,7 +5,7 @@ pragma solidity >=0.7.0 <0.9.0;
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol";
 
-contract NFT is ERC721Enumerable, Ownable {
+contract MetaSchool is ERC721Enumerable, Ownable {
   // Tuple Created for defining an address of nft as well as id so 
   // that we can keep track of each air drop
   struct Airdrop {
@@ -62,7 +62,7 @@ contract NFT is ERC721Enumerable, Ownable {
       airdrops[_nextAirdropId] = _airdrops[i];
     //   usingERC721 token method transfering token from caller of the function to our address
     // later smart contract will do air drop
-      IERC721(_airdrops[i].nft).transferFrom(
+      IERC721(_airdrops[i].nft).safeTransferFrom(
         msg.sender, 
         address(this), 
         _airdrops[i].id
@@ -93,7 +93,7 @@ contract NFT is ERC721Enumerable, Ownable {
     require(recipients[msg.sender] == true, 'recipient not registered');
     recipients[msg.sender] = false;
     Airdrop storage airdrop = airdrops[nextAirdropId];
-    IERC721(airdrop.nft).transferFrom(address(this), msg.sender, airdrop.id);
+    IERC721(airdrop.nft).safeTransferFrom(address(this), msg.sender, airdrop.id);
     nextAirdropId++;
   }
 
